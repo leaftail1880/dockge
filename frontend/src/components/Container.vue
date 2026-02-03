@@ -17,6 +17,15 @@
             <div class="col-7">
                 <div class="function">
                     <div class="btn-group me-2" role="group">
+                        <router-link
+    v-if="!isEditMode && (status === 'running' || status === 'healthy')"
+    class="btn btn-warning"
+    :to="attachRouteLink"
+    :title="$t('Attach to main process STDIN/TTY (docker attach)')"
+>
+    <font-awesome-icon icon="plug" />
+    Attach
+</router-link>
                         <router-link v-if="!isEditMode && (status === 'running' || status === 'healthy')" class="btn btn-normal" :to="terminalRouteLink" disabled="">
                             <font-awesome-icon icon="terminal" />
                             Bash
@@ -236,7 +245,14 @@ export default defineComponent({
         };
     },
     computed: {
-
+        attachRouteLink() {
+             // Clone terminalRouteLink but add a query param for 'attach' mode
+            const base = this.terminalRouteLink;
+            return {
+                ...base,
+                query: { ...base.query, mode: "attach" }
+            };
+        },
         networkList() {
             let list = [];
             for (const networkName in this.jsonObject.networks) {
