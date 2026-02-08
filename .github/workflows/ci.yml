@@ -28,21 +28,6 @@ jobs:
           git config --global core.autocrlf false
           git config --global core.eol lf
 
-      - name: Uh
-        run: corepack enable
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: ${{matrix.node}}
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Check Typescript
-        run: pnpm run check-ts
-
       - name: Build and publish a Docker image ghcr.io/${{ github.repository }}
         uses: macbre/push-to-ghcr@master
         with:
