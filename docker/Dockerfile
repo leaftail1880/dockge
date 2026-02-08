@@ -1,4 +1,4 @@
-FROM node:22-bookworm-slim AS BASE
+FROM node:22-bookworm-slim AS base
 RUN apt update && apt install --yes --no-install-recommends \
     curl \
     ca-certificates \
@@ -34,7 +34,7 @@ RUN go build -x -o ./extra/healthcheck ./extra/healthcheck.go
 ############################################
 # Build frontend
 ############################################
-FROM BASE AS build_frontend
+FROM base AS build_frontend
 WORKDIR /app
 COPY --chown=node:node . .
 RUN pnpm ci && \
@@ -43,7 +43,7 @@ RUN pnpm ci && \
 ############################################
 # Install node modules
 ############################################
-FROM BASE AS build_nodemodules
+FROM base AS build_nodemodules
 WORKDIR /app
 COPY --chown=node:node  ./package.json ./package.json
 COPY --chown=node:node  ./pnpm* .
@@ -52,7 +52,7 @@ RUN pnpm install --frozen-lockfile --production
 ############################################
 # ⭐ Main Image
 ############################################
-FROM BASE AS release
+FROM base AS release
 WORKDIR /app
 COPY --chown=node:node --from=build_healthcheck /app/extra/healthcheck /app/extra/healthcheck
 COPY --from=build_frontend /app/frontend-dist /app/frontend-dist
