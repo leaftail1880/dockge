@@ -246,11 +246,20 @@ export class TerminalSocketHandler extends AgentSocketHandler {
 
     agentSocket.on(
       "attachTerminal",
-      async (containerName: unknown, terminalName: unknown, callback) => {
+      async (
+        serviceName: unknown,
+        stackName: unknown,
+        terminalName: unknown,
+        callback,
+      ) => {
         try {
           checkLogin(socket);
 
-          if (typeof containerName !== "string") {
+          if (typeof stackName !== "string") {
+            throw new Error("Stack name must be a string.");
+          }
+
+          if (typeof serviceName !== "string") {
             throw new Error("Container name must be a string.");
           }
 
@@ -258,11 +267,13 @@ export class TerminalSocketHandler extends AgentSocketHandler {
             throw new Error("Container name must be a string.");
           }
 
+          const stack = await Stack.getStack(server, stackName);
+          console.log(stack.name, stack);
           const attachTerm = await AttachTerminal.getOrCreateAttachTerminal(
             server,
             terminalName,
-            containerName,
-            server.stacksDir,
+            serviceName,
+            stack.path,
           );
 
           attachTerm.join(socket);

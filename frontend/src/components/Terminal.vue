@@ -140,6 +140,7 @@ export default {
       this.$root.emitAgent(
         this.endpoint,
         "attachTerminal",
+        this.serviceName,
         this.stackName,
         this.name,
         (res) => {

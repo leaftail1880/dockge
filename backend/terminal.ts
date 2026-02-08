@@ -131,6 +131,7 @@ export class Terminal {
     }
 
     try {
+      console.log("START", this.file, this.args);
       this._ptyProcess = pty.spawn(this.file, this.args, {
         name: this.name,
         cwd: this.cwd,
@@ -331,22 +332,22 @@ export class MainTerminal extends InteractiveTerminal {
  * AttachTerminal class: attaches to container main process TTY and shows previous logs
  */
 export class AttachTerminal extends InteractiveTerminal {
-  protected containerName: string;
+  protected serviceName: string;
 
   constructor(
     server: DockgeServer,
     name: string,
-    containerName: string,
+    serviceName: string,
     cwd: string,
   ) {
     super(
       server,
       name,
       "docker",
-      ["attach", "--sig-proxy=false", containerName],
+      ["compose", "attach", "--sig-proxy=false", serviceName],
       cwd,
     );
-    this.containerName = containerName;
+    this.serviceName = serviceName;
   }
 
   /**
@@ -357,7 +358,7 @@ export class AttachTerminal extends InteractiveTerminal {
   public async startWithLogs() {
     try {
       const logs = await AttachTerminal.getContainerLogs(
-        this.containerName,
+        this.serviceName,
         this.cwd,
       );
       // Send logs to all attached sockets immediately
@@ -378,14 +379,18 @@ export class AttachTerminal extends InteractiveTerminal {
    * Synchronously get logs (stdout+stderr) for container
    */
   private static getContainerLogs(
-    containerName: string,
-    cwd?: string,
+    serviceName: string,
+    cwd: string,
   ): Promise<string> {
     return new Promise((resolve) => {
       // Get last 100 lines for scrolling UX, or adjust as needed
-      const proc = spawn("docker", ["logs", "--tail=100", containerName], {
-        cwd,
-      });
+      const proc = spawn(
+        "docker",
+        ["compose", "logs", "--tail=100", serviceName],
+        {
+          cwd,
+        },
+      );
       let result = "";
 
       proc.stdout.on("data", (data) => (result += data.toString()));
@@ -409,13 +414,13 @@ export class AttachTerminal extends InteractiveTerminal {
   public static async getOrCreateAttachTerminal(
     server: DockgeServer,
     name: string,
-    containerName: string,
+    serviceName: string,
     cwd: string,
   ): Promise<AttachTerminal> {
     // One attach session per terminal name (same as InteractiveTerminal)
     let instance = Terminal.getTerminal(name);
     if (!(instance instanceof AttachTerminal)) {
-      instance = new AttachTerminal(server, name, containerName, cwd);
+      instance = new AttachTerminal(server, name, serviceName, cwd);
     }
     // Cast for type
     const attachTerm = instance as AttachTerminal;

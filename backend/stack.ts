@@ -1,9 +1,7 @@
-import { DockgeServer } from "./dockge-server";
 import fs, { promises as fsAsync } from "fs";
-import { log } from "./log";
-import yaml from "yaml";
-import { DockgeSocket, fileExists, ValidationError } from "./util-server";
 import path from "path";
+import childProcessAsync from "promisify-child-process";
+import yaml from "yaml";
 import {
   acceptedComposeFileNames,
   acceptedComposeOverrideFileNames,
@@ -15,14 +13,15 @@ import {
   getCombinedTerminalName,
   getComposeTerminalName,
   getContainerExecTerminalName,
-  PROGRESS_TERMINAL_ROWS,
   RUNNING,
   TERMINAL_ROWS,
   UNKNOWN,
 } from "../common/util-common";
-import { InteractiveTerminal, Terminal } from "./terminal";
-import childProcessAsync from "promisify-child-process";
+import { DockgeServer } from "./dockge-server";
+import { log } from "./log";
 import { Settings } from "./settings";
+import { InteractiveTerminal, Terminal } from "./terminal";
+import { DockgeSocket, fileExists, ValidationError } from "./util-server";
 
 export interface DeleteOptions {
   deleteStackFiles: boolean;
@@ -601,7 +600,7 @@ export class Stack {
           return stack;
         } else {
           // Really not found
-          throw new ValidationError("Stack not found");
+          throw new ValidationError("Stack not found " + stackName);
         }
       }
     } else {

@@ -50,6 +50,7 @@ export default {
       return this.$route.query.mode === "attach" ? "attach" : "interactive";
     },
     terminalName() {
+      console.log(this);
       return getContainerExecTerminalName(
         this.endpoint,
         this.stackName,
