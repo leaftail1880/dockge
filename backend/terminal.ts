@@ -131,7 +131,6 @@ export class Terminal {
     }
 
     try {
-      console.log("START", this.file, this.args);
       this._ptyProcess = pty.spawn(this.file, this.args, {
         name: this.name,
         cwd: this.cwd,

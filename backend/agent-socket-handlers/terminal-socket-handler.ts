@@ -268,7 +268,6 @@ export class TerminalSocketHandler extends AgentSocketHandler {
           }
 
           const stack = await Stack.getStack(server, stackName);
-          console.log(stack.name, stack);
           const attachTerm = await AttachTerminal.getOrCreateAttachTerminal(
             server,
             terminalName,

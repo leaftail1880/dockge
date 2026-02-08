@@ -87,7 +87,7 @@ export default {
 
     if (this.mode === "mainTerminal") {
       this.mainTerminalConfig();
-    } else if (this.mode === "interactive") {
+    } else if (this.mode === "interactive" || this.mode === "attach") {
       this.interactiveTerminalConfig();
     }
 
