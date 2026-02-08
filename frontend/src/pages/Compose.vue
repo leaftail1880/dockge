@@ -174,34 +174,13 @@
                 <div class="col-lg-6">
                     <!-- Override YAML editor (only show if file exists) -->
                     <div v-if="stack.composeOverrideYAML && stack.composeOverrideYAML.trim() !== ''">
-                    <h4 class="mb-3">{{ stack.composeOverrideFileName || 'compose.override.yaml' }}</h4>
-                    <div class="shadow-box mb-3 editor-box" :class="{'edit-mode' : isEditMode}">
-                        <button v-if="isEditMode" v-b-modal.compose-override-editor-modal class="expand-button">
-                            <font-awesome-icon icon="expand" />
-                        </button>
-                        <code-mirror
-                            ref="overrideEditor"
-                            v-model="stack.composeOverrideYAML"
-                            :extensions="extensions"
-                            minimal
-                            wrap="true"
-                            dark="true"
-                            tab="true"
-                            :disabled="!isEditMode"
-                            :hasFocus="editorFocus"
-                            @change="yamlCodeChange"
-                        />
-                    </div>
-                    <div v-if="isEditMode" class="mb-3">
-                        {{ yamlError }}
-                    </div>
-
-                    <!-- Override modal fullscreen editor (CodeMirror) -->
-                    <BModal id="compose-override-editor-modal" :title="stack.composeOverrideFileName || 'compose.override.yaml'"
-scrollable size="fullscreen" hide-footer>
+                        <h4 class="mb-3">{{ stack.composeOverrideFileName || 'compose.override.yaml' }}</h4>
                         <div class="shadow-box mb-3 editor-box" :class="{'edit-mode' : isEditMode}">
+                            <button v-if="isEditMode" v-b-modal.compose-override-editor-modal class="expand-button">
+                                <font-awesome-icon icon="expand" />
+                            </button>
                             <code-mirror
-                                ref="editorModal"
+                                ref="overrideEditor"
                                 v-model="stack.composeOverrideYAML"
                                 :extensions="extensions"
                                 minimal
@@ -216,8 +195,30 @@ scrollable size="fullscreen" hide-footer>
                         <div v-if="isEditMode" class="mb-3">
                             {{ yamlError }}
                         </div>
-                    </BModal>
 
+                        <!-- Override modal fullscreen editor (CodeMirror) -->
+                        <BModal
+                            id="compose-override-editor-modal" :title="stack.composeOverrideFileName || 'compose.override.yaml'"
+                            scrollable size="fullscreen" hide-footer
+                        >
+                            <div class="shadow-box mb-3 editor-box" :class="{'edit-mode' : isEditMode}">
+                                <code-mirror
+                                    ref="editorModal"
+                                    v-model="stack.composeOverrideYAML"
+                                    :extensions="extensions"
+                                    minimal
+                                    wrap="true"
+                                    dark="true"
+                                    tab="true"
+                                    :disabled="!isEditMode"
+                                    :hasFocus="editorFocus"
+                                    @change="yamlCodeChange"
+                                />
+                            </div>
+                            <div v-if="isEditMode" class="mb-3">
+                                {{ yamlError }}
+                            </div>
+                        </BModal>
                     </div>
 
                     <h4 class="mb-3">{{ stack.composeFileName }}</h4>
@@ -988,7 +989,7 @@ export default {
 
 .editor-box {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 14px;
+    font-size: 13px;
     &.edit-mode {
         background-color: #2c2f38 !important;
     }

@@ -100,7 +100,7 @@ export default {
         this.terminal.focus();
 
         // Add right-click context menu handler for paste
-        this.$refs.terminal.addEventListener('contextmenu', this.handleContextMenu);
+        this.$refs.terminal.addEventListener("contextmenu", this.handleContextMenu);
 
         // Add selection handler for copy to clipboard
         this.terminal.onSelectionChange(() => {
@@ -140,7 +140,7 @@ export default {
     unmounted() {
         window.removeEventListener("resize", this.onResizeEvent);
         if (this.$refs?.terminal) {
-            this.$refs.terminal.removeEventListener('contextmenu', this.handleContextMenu);
+            this.$refs.terminal.removeEventListener("contextmenu", this.handleContextMenu);
         }
         this.$root.unbindTerminal(this.name);
         this.terminal.dispose();

@@ -18,36 +18,42 @@
                 <div class="function">
                     <div class="btn-group me-2" role="group">
                         <router-link
-    v-if="!isEditMode && (status === 'running' || status === 'healthy')"
-    class="btn btn-warning"
-    :to="attachRouteLink"
-    :title="$t('Attach to main process STDIN/TTY (docker attach)')"
->
-    <font-awesome-icon icon="plug" />
-    Attach
-</router-link>
+                            v-if="!isEditMode && (status === 'running' || status === 'healthy')"
+                            class="btn btn-warning"
+                            :to="attachRouteLink"
+                            :title="$t('Attach to main process STDIN/TTY (docker attach)')"
+                        >
+                            <font-awesome-icon icon="plug" />
+                            Attach
+                        </router-link>
                         <router-link v-if="!isEditMode && (status === 'running' || status === 'healthy')" class="btn btn-normal" :to="terminalRouteLink" disabled="">
                             <font-awesome-icon icon="terminal" />
                             Bash
                         </router-link>
-                        <button v-if="this.serviceCount > 1 && !isEditMode && status !== 'running' && status !== 'healthy'"
-                                class="btn btn-primary"
-                                :disabled="processing"
-                                @click="startService">
+                        <button
+                            v-if="serviceCount > 1 && !isEditMode && status !== 'running' && status !== 'healthy'"
+                            class="btn btn-primary"
+                            :disabled="processing"
+                            @click="startService"
+                        >
                             <font-awesome-icon icon="play" class="me-1" />
                             {{ $t("startStack") }}
                         </button>
-                        <button v-if="this.serviceCount > 1 && !isEditMode && (status === 'running' || status === 'healthy' || status === 'unhealthy')"
-                                class="btn btn-normal"
-                                :disabled="processing"
-                                @click="stopService">
+                        <button
+                            v-if="serviceCount > 1 && !isEditMode && (status === 'running' || status === 'healthy' || status === 'unhealthy')"
+                            class="btn btn-normal"
+                            :disabled="processing"
+                            @click="stopService"
+                        >
                             <font-awesome-icon icon="stop" class="me-1" />
                             {{ $t("stopStack") }}
                         </button>
-                        <button v-if="this.serviceCount > 1 && !isEditMode && (status === 'running' || status === 'healthy' || status === 'unhealthy')"
-                                class="btn btn-normal"
-                                :disabled="processing"
-                                @click="restartService">
+                        <button
+                            v-if="serviceCount > 1 && !isEditMode && (status === 'running' || status === 'healthy' || status === 'unhealthy')"
+                            class="btn btn-normal"
+                            :disabled="processing"
+                            @click="restartService"
+                        >
                             <font-awesome-icon icon="rotate" class="me-1" />
                             {{ $t("restartStack") }}
                         </button>
@@ -246,11 +252,12 @@ export default defineComponent({
     },
     computed: {
         attachRouteLink() {
-             // Clone terminalRouteLink but add a query param for 'attach' mode
+            // Clone terminalRouteLink but add a query param for 'attach' mode
             const base = this.terminalRouteLink;
             return {
                 ...base,
-                query: { ...base.query, mode: "attach" }
+                query: { ...base.query,
+                    mode: "attach" }
             };
         },
         networkList() {

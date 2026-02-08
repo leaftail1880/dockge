@@ -1,7 +1,8 @@
+/* eslint-disable camelcase */
 // Console colors
 // https://stackoverflow.com/questions/9781218/how-to-change-node-jss-console-font-color
-import { intHash, isDev } from "../common/util-common";
 import dayjs from "dayjs";
+import { intHash, isDev } from "../common/util-common";
 
 export const CONSOLE_STYLE_Reset = "\x1b[0m";
 export const CONSOLE_STYLE_Bright = "\x1b[1m";
@@ -50,15 +51,14 @@ const consoleModuleColors = [
     CONSOLE_STYLE_FgPink,
 ];
 
-const consoleLevelColors : Record<string, string> = {
-    "INFO": CONSOLE_STYLE_FgCyan,
-    "WARN": CONSOLE_STYLE_FgYellow,
-    "ERROR": CONSOLE_STYLE_FgRed,
-    "DEBUG": CONSOLE_STYLE_FgGray,
+const consoleLevelColors: Record<string, string> = {
+    INFO: CONSOLE_STYLE_FgCyan,
+    WARN: CONSOLE_STYLE_FgYellow,
+    ERROR: CONSOLE_STYLE_FgRed,
+    DEBUG: CONSOLE_STYLE_FgGray,
 };
 
 class Logger {
-
     /**
      * DOCKGE_HIDE_LOG=debug_monitor,info_monitor
      *
@@ -68,7 +68,7 @@ class Logger {
      *     "info_monitor",
      *  ]
      */
-    hideLog : Record<string, string[]> = {
+    hideLog: Record<string, string[]> = {
         info: [],
         warn: [],
         error: [],
@@ -80,7 +80,9 @@ class Logger {
      */
     constructor() {
         if (typeof process !== "undefined" && process.env.DOCKGE_HIDE_LOG) {
-            const list = process.env.DOCKGE_HIDE_LOG.split(",").map(v => v.toLowerCase());
+            const list = process.env.DOCKGE_HIDE_LOG.split(",").map((v) =>
+                v.toLowerCase(),
+            );
 
             for (const pair of list) {
                 // split first "_" only
@@ -107,7 +109,10 @@ class Logger {
             return;
         }
 
-        if (this.hideLog[level] && this.hideLog[level].includes(module.toLowerCase())) {
+        if (
+            this.hideLog[level] &&
+            this.hideLog[level].includes(module.toLowerCase())
+        ) {
             return;
         }
 
@@ -122,10 +127,12 @@ class Logger {
         }
 
         const levelColor = consoleLevelColors[level];
-        const moduleColor = consoleModuleColors[intHash(module, consoleModuleColors.length)];
+        const moduleColor =
+            consoleModuleColors[intHash(module, consoleModuleColors.length)];
 
         let timePart = CONSOLE_STYLE_FgCyan + now + CONSOLE_STYLE_Reset;
-        const modulePart = "[" + moduleColor + module + CONSOLE_STYLE_Reset + "]";
+        const modulePart =
+            "[" + moduleColor + module + CONSOLE_STYLE_Reset + "]";
         const levelPart = levelColor + `${level}:` + CONSOLE_STYLE_Reset;
 
         if (level === "INFO") {
@@ -133,7 +140,7 @@ class Logger {
         } else if (level === "WARN") {
             console.warn(timePart, modulePart, levelPart, msg);
         } else if (level === "ERROR") {
-            let msgPart : unknown;
+            let msgPart: unknown;
             if (typeof msg === "string") {
                 msgPart = CONSOLE_STYLE_FgRed + msg + CONSOLE_STYLE_Reset;
             } else {
@@ -143,7 +150,7 @@ class Logger {
         } else if (level === "DEBUG") {
             if (isDev) {
                 timePart = CONSOLE_STYLE_FgGray + now + CONSOLE_STYLE_Reset;
-                let msgPart : unknown;
+                let msgPart: unknown;
                 if (typeof msg === "string") {
                     msgPart = CONSOLE_STYLE_FgGray + msg + CONSOLE_STYLE_Reset;
                 } else {

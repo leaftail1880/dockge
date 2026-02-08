@@ -4,41 +4,45 @@ on:
   push:
     branches: [master]
     paths-ignore:
-      - '*.md'
+      - "*.md"
   pull_request:
     branches: [master]
     paths-ignore:
-      - '*.md'
+      - "*.md"
+
+permissions:
+  packages: write
 
 jobs:
   ci:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest, ARM, ARM64]
+        os: [ubuntu-latest]
         node: [22] # Can be changed
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout Code
-        run: |  # Mainly for Windows
-          git config --global core.autocrlf false
-          git config --global core.eol lf
         uses: actions/checkout@v4
 
+      - run: | # Mainly for Windows
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v6
         with:
           node-version: ${{matrix.node}}
+          cache: pnpm
 
       - name: Install dependencies
-        run: npm install
-
-      - name: Lint
-        run: npm run lint
+        run: pnpm install
 
       - name: Check Typescript
-        run: npm run check-ts
+        run: pnpm run check-ts
 
-      - name: Build
-        run: npm run build:frontend
-      # more things can be add later like tests etc..
-
+      - name: Build and publish a Docker image ghcr.io/${{ github.repository }}
+        uses: macbre/push-to-ghcr@master
+        with:
+          image_name: ${{ github.repository }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          dockerfile: "./docker/Dockerfile"
