@@ -37,7 +37,7 @@ RUN go build -x -o ./extra/healthcheck ./extra/healthcheck.go
 FROM base AS build_frontend
 WORKDIR /app
 COPY --chown=node:node . .
-RUN pnpm ci && \
+RUN pnpm install --frozen-lockfile && \
     pnpm run build:frontend
 
 ############################################
