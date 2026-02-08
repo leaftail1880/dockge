@@ -5,16 +5,19 @@ Yes or no, it depends on what you will try to do. Since I don't want to waste yo
 Here are some references:
 
 ### ✅ Usually accepted:
+
 - Bug fix
 - Security fix
 - Adding new language files (see [these instructions](https://github.com/louislam/dockge/blob/master/frontend/src/lang/README.md))
 - Adding new language keys: `$t("...")`
 
 ### ⚠️ Discussion required:
+
 - Large pull requests
 - New features
 
 ### ❌ Won't be merged:
+
 - A dedicated PR for translating existing languages (see [these instructions](https://github.com/louislam/dockge/blob/master/frontend/src/lang/README.md))
 - Do not pass the auto-test
 - Any breaking changes
@@ -105,11 +108,11 @@ TODO
 Both frontend and backend share the same package.json. However, the frontend dependencies are eventually not used in the production environment, because it is usually also baked into dist files. So:
 
 - Frontend dependencies = "devDependencies"
-    - Examples: vue, chart.js
+  - Examples: vue, chart.js
 - Backend dependencies = "dependencies"
-    - Examples: socket.io, sqlite3
+  - Examples: socket.io, sqlite3
 - Development dependencies = "devDependencies"
-    - Examples: eslint, sass
+  - Examples: eslint, sass
 
 ### Update Dependencies
 
@@ -117,7 +120,7 @@ Should only be done by the maintainer.
 
 ```bash
 npm update
-````
+```
 
 It should update the patch release version only.
 

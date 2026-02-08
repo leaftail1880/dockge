@@ -37,30 +37,30 @@ Please let me know if your username is missing, if your pull request has been me
 const lines = input.split("\n").filter((line) => line.trim() !== "");
 
 for (const line of lines) {
-    // Split the last " by "
-    const usernamePullRequesURL = line.split(" by ").pop();
+  // Split the last " by "
+  const usernamePullRequesURL = line.split(" by ").pop();
 
-    if (!usernamePullRequesURL) {
-        console.log("Unable to parse", line);
-        continue;
-    }
+  if (!usernamePullRequesURL) {
+    console.log("Unable to parse", line);
+    continue;
+  }
 
-    const [ username, pullRequestURL ] = usernamePullRequesURL.split(" in ");
-    const pullRequestID = "#" + pullRequestURL.split("/").pop();
-    let message = line.split(" by ").shift();
+  const [username, pullRequestURL] = usernamePullRequesURL.split(" in ");
+  const pullRequestID = "#" + pullRequestURL.split("/").pop();
+  let message = line.split(" by ").shift();
 
-    if (!message) {
-        console.log("Unable to parse", line);
-        continue;
-    }
+  if (!message) {
+    console.log("Unable to parse", line);
+    continue;
+  }
 
-    message = message.split("* ").pop();
+  message = message.split("* ").pop();
 
-    let thanks = "";
-    if (username != "@louislam") {
-        thanks = `(Thanks ${username})`;
-    }
+  let thanks = "";
+  if (username != "@louislam") {
+    thanks = `(Thanks ${username})`;
+  }
 
-    console.log(pullRequestID, message, thanks);
+  console.log(pullRequestID, message, thanks);
 }
 console.log(template);

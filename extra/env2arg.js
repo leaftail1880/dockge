@@ -9,10 +9,10 @@ let args = process.argv.slice(3);
 let replacedArgs = [];
 
 for (let arg of args) {
-    for (let key in env) {
-        arg = arg.replaceAll(`$${key}`, env[key]);
-    }
-    replacedArgs.push(arg);
+  for (let key in env) {
+    arg = arg.replaceAll(`$${key}`, env[key]);
+  }
+  replacedArgs.push(arg);
 }
 
 let child = childProcess.spawn(cmd, replacedArgs);

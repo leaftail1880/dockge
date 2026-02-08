@@ -6,21 +6,21 @@ const newVersion = process.env.VERSION;
 
 console.log("New Version: " + newVersion);
 
-if (! newVersion) {
-    console.error("invalid version");
-    process.exit(1);
+if (!newVersion) {
+  console.error("invalid version");
+  process.exit(1);
 }
 
 const exists = tagExists(newVersion);
 
-if (! exists) {
-    // Process package.json
-    pkg.version = newVersion;
-    fs.writeFileSync("package.json", JSON.stringify(pkg, null, 4) + "\n");
-    commit(newVersion);
-    tag(newVersion);
+if (!exists) {
+  // Process package.json
+  pkg.version = newVersion;
+  fs.writeFileSync("package.json", JSON.stringify(pkg, null, 4) + "\n");
+  commit(newVersion);
+  tag(newVersion);
 } else {
-    console.log("version exists");
+  console.log("version exists");
 }
 
 /**
@@ -28,15 +28,15 @@ if (! exists) {
  * @param {string} version Version to update to
  */
 function commit(version) {
-    let msg = "Update to " + version;
+  let msg = "Update to " + version;
 
-    let res = childProcess.spawnSync("git", [ "commit", "-m", msg, "-a" ]);
-    let stdout = res.stdout.toString().trim();
-    console.log(stdout);
+  let res = childProcess.spawnSync("git", ["commit", "-m", msg, "-a"]);
+  let stdout = res.stdout.toString().trim();
+  console.log(stdout);
 
-    if (stdout.includes("no changes added to commit")) {
-        throw new Error("commit error");
-    }
+  if (stdout.includes("no changes added to commit")) {
+    throw new Error("commit error");
+  }
 }
 
 /**
@@ -44,8 +44,8 @@ function commit(version) {
  * @param {string} version Tag to create
  */
 function tag(version) {
-    let res = childProcess.spawnSync("git", [ "tag", version ]);
-    console.log(res.stdout.toString().trim());
+  let res = childProcess.spawnSync("git", ["tag", version]);
+  console.log(res.stdout.toString().trim());
 }
 
 /**
@@ -54,11 +54,11 @@ function tag(version) {
  * @returns {boolean} Does the tag already exist
  */
 function tagExists(version) {
-    if (! version) {
-        throw new Error("invalid version");
-    }
+  if (!version) {
+    throw new Error("invalid version");
+  }
 
-    let res = childProcess.spawnSync("git", [ "tag", "-l", version ]);
+  let res = childProcess.spawnSync("git", ["tag", "-l", version]);
 
-    return res.stdout.toString().trim() === version;
+  return res.stdout.toString().trim() === version;
 }

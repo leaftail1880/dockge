@@ -29,8 +29,8 @@ document.title = document.title + " - " + location.host;
 const app = createApp(rootApp());
 
 app.use(Toast, {
-    position: POSITION.BOTTOM_RIGHT,
-    showCloseButtonOnHover: true,
+  position: POSITION.BOTTOM_RIGHT,
+  showCloseButtonOnHover: true,
 });
 app.use(router);
 app.use(i18n);
@@ -41,65 +41,58 @@ app.mount("#app");
  * Root Vue component
  */
 function rootApp() {
-    const toast = useToast();
+  const toast = useToast();
 
-    return defineComponent({
-        mixins: [
-            socket,
-            lang,
-            theme,
-        ],
-        data() {
-            return {
-                loggedIn: false,
-                allowLoginDialog: false,
-                username: null,
-            };
-        },
-        computed: {
+  return defineComponent({
+    mixins: [socket, lang, theme],
+    data() {
+      return {
+        loggedIn: false,
+        allowLoginDialog: false,
+        username: null,
+      };
+    },
+    computed: {},
+    methods: {
+      /**
+       * Show success or error toast dependant on response status code
+       * @param {object} res Response object
+       * @returns {void}
+       */
+      toastRes(res) {
+        let msg = res.msg;
+        if (res.msgi18n) {
+          if (msg != null && typeof msg === "object") {
+            msg = this.$t(msg.key, msg.values);
+          } else {
+            msg = this.$t(msg);
+          }
+        }
 
-        },
-        methods: {
+        if (res.ok) {
+          toast.success(msg);
+        } else {
+          toast.error(msg);
+        }
+      },
+      /**
+       * Show a success toast
+       * @param {string} msg Message to show
+       * @returns {void}
+       */
+      toastSuccess(msg: string) {
+        toast.success(this.$t(msg));
+      },
 
-            /**
-             * Show success or error toast dependant on response status code
-             * @param {object} res Response object
-             * @returns {void}
-             */
-            toastRes(res) {
-                let msg = res.msg;
-                if (res.msgi18n) {
-                    if (msg != null && typeof msg === "object") {
-                        msg = this.$t(msg.key, msg.values);
-                    } else {
-                        msg = this.$t(msg);
-                    }
-                }
-
-                if (res.ok) {
-                    toast.success(msg);
-                } else {
-                    toast.error(msg);
-                }
-            },
-            /**
-             * Show a success toast
-             * @param {string} msg Message to show
-             * @returns {void}
-             */
-            toastSuccess(msg : string) {
-                toast.success(this.$t(msg));
-            },
-
-            /**
-             * Show an error toast
-             * @param {string} msg Message to show
-             * @returns {void}
-             */
-            toastError(msg : string) {
-                toast.error(this.$t(msg));
-            },
-        },
-        render: () => h(App),
-    });
+      /**
+       * Show an error toast
+       * @param {string} msg Message to show
+       * @returns {void}
+       */
+      toastError(msg: string) {
+        toast.error(this.$t(msg));
+      },
+    },
+    render: () => h(App),
+  });
 }

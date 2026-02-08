@@ -1,5 +1,5 @@
-name: "⚠️ Ask for help (Please go to the \"Discussions\" tab to submit a Help Request)"
-description: "⚠️ Please go to the \"Discussions\" tab to submit a Help Request"
+name: '⚠️ Ask for help (Please go to the "Discussions" tab to submit a Help Request)'
+description: '⚠️ Please go to the "Discussions" tab to submit a Help Request'
 body:
   - type: markdown
     attributes:
@@ -8,7 +8,7 @@ body:
   - type: checkboxes
     id: no-duplicate-issues
     attributes:
-      label: "Issues are for bug reports only, please go to the \"Discussions\" tab to submit a Feature Request"
+      label: 'Issues are for bug reports only, please go to the "Discussions" tab to submit a Feature Request'
       options:
         - label: "I understand"
           required: true

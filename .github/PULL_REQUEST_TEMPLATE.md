@@ -1,7 +1,8 @@
 ⚠️⚠️⚠️ Since we do not accept all types of pull requests and do not want to waste your time. Please be sure that you have read pull request rules:
 https://github.com/louislam/dockge/blob/master/CONTRIBUTING.md
 
-Tick the checkbox if you understand [x]: 
+Tick the checkbox if you understand [x]:
+
 - [ ] I have read and understand the pull request rules.
 
 # Description
@@ -25,7 +26,7 @@ Please delete any options that are not relevant.
 - [ ] I ran ESLint and other linters for modified files
 - [ ] I have performed a self-review of my own code and tested it
 - [ ] I have commented my code, particularly in hard-to-understand areas
-  (including JSDoc for methods)
+      (including JSDoc for methods)
 - [ ] My changes generate no new warnings
 - [ ] My code needed automated testing. I have added them (this is optional task)
 

@@ -39,181 +39,180 @@ export const CONSOLE_STYLE_BgWhite = "\x1b[47m";
 export const CONSOLE_STYLE_BgGray = "\x1b[100m";
 
 const consoleModuleColors = [
-    CONSOLE_STYLE_FgCyan,
-    CONSOLE_STYLE_FgGreen,
-    CONSOLE_STYLE_FgLightGreen,
-    CONSOLE_STYLE_FgBlue,
-    CONSOLE_STYLE_FgLightBlue,
-    CONSOLE_STYLE_FgMagenta,
-    CONSOLE_STYLE_FgOrange,
-    CONSOLE_STYLE_FgViolet,
-    CONSOLE_STYLE_FgBrown,
-    CONSOLE_STYLE_FgPink,
+  CONSOLE_STYLE_FgCyan,
+  CONSOLE_STYLE_FgGreen,
+  CONSOLE_STYLE_FgLightGreen,
+  CONSOLE_STYLE_FgBlue,
+  CONSOLE_STYLE_FgLightBlue,
+  CONSOLE_STYLE_FgMagenta,
+  CONSOLE_STYLE_FgOrange,
+  CONSOLE_STYLE_FgViolet,
+  CONSOLE_STYLE_FgBrown,
+  CONSOLE_STYLE_FgPink,
 ];
 
 const consoleLevelColors: Record<string, string> = {
-    INFO: CONSOLE_STYLE_FgCyan,
-    WARN: CONSOLE_STYLE_FgYellow,
-    ERROR: CONSOLE_STYLE_FgRed,
-    DEBUG: CONSOLE_STYLE_FgGray,
+  INFO: CONSOLE_STYLE_FgCyan,
+  WARN: CONSOLE_STYLE_FgYellow,
+  ERROR: CONSOLE_STYLE_FgRed,
+  DEBUG: CONSOLE_STYLE_FgGray,
 };
 
 class Logger {
-    /**
-     * DOCKGE_HIDE_LOG=debug_monitor,info_monitor
-     *
-     * Example:
-     *  [
-     *     "debug_monitor",          // Hide all logs that level is debug and the module is monitor
-     *     "info_monitor",
-     *  ]
-     */
-    hideLog: Record<string, string[]> = {
-        info: [],
-        warn: [],
-        error: [],
-        debug: [],
-    };
+  /**
+   * DOCKGE_HIDE_LOG=debug_monitor,info_monitor
+   *
+   * Example:
+   *  [
+   *     "debug_monitor",          // Hide all logs that level is debug and the module is monitor
+   *     "info_monitor",
+   *  ]
+   */
+  hideLog: Record<string, string[]> = {
+    info: [],
+    warn: [],
+    error: [],
+    debug: [],
+  };
 
-    /**
-     *
-     */
-    constructor() {
-        if (typeof process !== "undefined" && process.env.DOCKGE_HIDE_LOG) {
-            const list = process.env.DOCKGE_HIDE_LOG.split(",").map((v) =>
-                v.toLowerCase(),
-            );
+  /**
+   *
+   */
+  constructor() {
+    if (typeof process !== "undefined" && process.env.DOCKGE_HIDE_LOG) {
+      const list = process.env.DOCKGE_HIDE_LOG.split(",").map((v) =>
+        v.toLowerCase(),
+      );
 
-            for (const pair of list) {
-                // split first "_" only
-                const values = pair.split(/_(.*)/s);
+      for (const pair of list) {
+        // split first "_" only
+        const values = pair.split(/_(.*)/s);
 
-                if (values.length >= 2) {
-                    this.hideLog[values[0]].push(values[1]);
-                }
-            }
-
-            this.debug("server", "DOCKGE_HIDE_LOG is set");
-            this.debug("server", this.hideLog);
+        if (values.length >= 2) {
+          this.hideLog[values[0]].push(values[1]);
         }
+      }
+
+      this.debug("server", "DOCKGE_HIDE_LOG is set");
+      this.debug("server", this.hideLog);
+    }
+  }
+
+  /**
+   * Write a message to the log
+   * @param module The module the log comes from
+   * @param msg Message to write
+   * @param level Log level. One of INFO, WARN, ERROR, DEBUG or can be customized.
+   */
+  log(module: string, msg: unknown, level: string) {
+    if (level === "DEBUG" && !isDev) {
+      return;
     }
 
-    /**
-     * Write a message to the log
-     * @param module The module the log comes from
-     * @param msg Message to write
-     * @param level Log level. One of INFO, WARN, ERROR, DEBUG or can be customized.
-     */
-    log(module: string, msg: unknown, level: string) {
-        if (level === "DEBUG" && !isDev) {
-            return;
-        }
+    if (
+      this.hideLog[level] &&
+      this.hideLog[level].includes(module.toLowerCase())
+    ) {
+      return;
+    }
 
-        if (
-            this.hideLog[level] &&
-            this.hideLog[level].includes(module.toLowerCase())
-        ) {
-            return;
-        }
+    module = module.toUpperCase();
+    level = level.toUpperCase();
 
-        module = module.toUpperCase();
-        level = level.toUpperCase();
+    let now;
+    if (dayjs.tz) {
+      now = dayjs.tz(new Date()).format();
+    } else {
+      now = dayjs().format();
+    }
 
-        let now;
-        if (dayjs.tz) {
-            now = dayjs.tz(new Date()).format();
+    const levelColor = consoleLevelColors[level];
+    const moduleColor =
+      consoleModuleColors[intHash(module, consoleModuleColors.length)];
+
+    let timePart = CONSOLE_STYLE_FgCyan + now + CONSOLE_STYLE_Reset;
+    const modulePart = "[" + moduleColor + module + CONSOLE_STYLE_Reset + "]";
+    const levelPart = levelColor + `${level}:` + CONSOLE_STYLE_Reset;
+
+    if (level === "INFO") {
+      console.info(timePart, modulePart, levelPart, msg);
+    } else if (level === "WARN") {
+      console.warn(timePart, modulePart, levelPart, msg);
+    } else if (level === "ERROR") {
+      let msgPart: unknown;
+      if (typeof msg === "string") {
+        msgPart = CONSOLE_STYLE_FgRed + msg + CONSOLE_STYLE_Reset;
+      } else {
+        msgPart = msg;
+      }
+      console.error(timePart, modulePart, levelPart, msgPart);
+    } else if (level === "DEBUG") {
+      if (isDev) {
+        timePart = CONSOLE_STYLE_FgGray + now + CONSOLE_STYLE_Reset;
+        let msgPart: unknown;
+        if (typeof msg === "string") {
+          msgPart = CONSOLE_STYLE_FgGray + msg + CONSOLE_STYLE_Reset;
         } else {
-            now = dayjs().format();
+          msgPart = msg;
         }
+        console.debug(timePart, modulePart, levelPart, msgPart);
+      }
+    } else {
+      console.log(timePart, modulePart, msg);
+    }
+  }
 
-        const levelColor = consoleLevelColors[level];
-        const moduleColor =
-            consoleModuleColors[intHash(module, consoleModuleColors.length)];
+  /**
+   * Log an INFO message
+   * @param module Module log comes from
+   * @param msg Message to write
+   */
+  info(module: string, msg: unknown) {
+    this.log(module, msg, "info");
+  }
 
-        let timePart = CONSOLE_STYLE_FgCyan + now + CONSOLE_STYLE_Reset;
-        const modulePart =
-            "[" + moduleColor + module + CONSOLE_STYLE_Reset + "]";
-        const levelPart = levelColor + `${level}:` + CONSOLE_STYLE_Reset;
+  /**
+   * Log a WARN message
+   * @param module Module log comes from
+   * @param msg Message to write
+   */
+  warn(module: string, msg: unknown) {
+    this.log(module, msg, "warn");
+  }
 
-        if (level === "INFO") {
-            console.info(timePart, modulePart, levelPart, msg);
-        } else if (level === "WARN") {
-            console.warn(timePart, modulePart, levelPart, msg);
-        } else if (level === "ERROR") {
-            let msgPart: unknown;
-            if (typeof msg === "string") {
-                msgPart = CONSOLE_STYLE_FgRed + msg + CONSOLE_STYLE_Reset;
-            } else {
-                msgPart = msg;
-            }
-            console.error(timePart, modulePart, levelPart, msgPart);
-        } else if (level === "DEBUG") {
-            if (isDev) {
-                timePart = CONSOLE_STYLE_FgGray + now + CONSOLE_STYLE_Reset;
-                let msgPart: unknown;
-                if (typeof msg === "string") {
-                    msgPart = CONSOLE_STYLE_FgGray + msg + CONSOLE_STYLE_Reset;
-                } else {
-                    msgPart = msg;
-                }
-                console.debug(timePart, modulePart, levelPart, msgPart);
-            }
-        } else {
-            console.log(timePart, modulePart, msg);
-        }
+  /**
+   * Log an ERROR message
+   * @param module Module log comes from
+   * @param msg Message to write
+   */
+  error(module: string, msg: unknown) {
+    this.log(module, msg, "error");
+  }
+
+  /**
+   * Log a DEBUG message
+   * @param module Module log comes from
+   * @param msg Message to write
+   */
+  debug(module: string, msg: unknown) {
+    this.log(module, msg, "debug");
+  }
+
+  /**
+   * Log an exception as an ERROR
+   * @param module Module log comes from
+   * @param exception The exception to include
+   * @param msg The message to write
+   */
+  exception(module: string, exception: unknown, msg: unknown) {
+    let finalMessage = exception;
+
+    if (msg) {
+      finalMessage = `${msg}: ${exception}`;
     }
 
-    /**
-     * Log an INFO message
-     * @param module Module log comes from
-     * @param msg Message to write
-     */
-    info(module: string, msg: unknown) {
-        this.log(module, msg, "info");
-    }
-
-    /**
-     * Log a WARN message
-     * @param module Module log comes from
-     * @param msg Message to write
-     */
-    warn(module: string, msg: unknown) {
-        this.log(module, msg, "warn");
-    }
-
-    /**
-     * Log an ERROR message
-     * @param module Module log comes from
-     * @param msg Message to write
-     */
-    error(module: string, msg: unknown) {
-        this.log(module, msg, "error");
-    }
-
-    /**
-     * Log a DEBUG message
-     * @param module Module log comes from
-     * @param msg Message to write
-     */
-    debug(module: string, msg: unknown) {
-        this.log(module, msg, "debug");
-    }
-
-    /**
-     * Log an exception as an ERROR
-     * @param module Module log comes from
-     * @param exception The exception to include
-     * @param msg The message to write
-     */
-    exception(module: string, exception: unknown, msg: unknown) {
-        let finalMessage = exception;
-
-        if (msg) {
-            finalMessage = `${msg}: ${exception}`;
-        }
-
-        this.log(module, finalMessage, "error");
-    }
+    this.log(module, finalMessage, "error");
+  }
 }
 
 export const log = new Logger();

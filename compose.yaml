@@ -11,7 +11,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./data:/app/data
-        
+
       # If you want to use private registries, you need to share the auth file with Dockge:
       # - /root/.docker/:/root/.docker
 
@@ -28,5 +28,5 @@ services:
       #         master if using remote agents, otherwise remote agents will not be able to
       #         connect due to the CAPTCHA challenge and if you must, only expose the master
       #         to the internet for access.
-      #- TURNSTILE_SITE_KEY=0x4AAAAAAXXXXXXXX 
+      #- TURNSTILE_SITE_KEY=0x4AAAAAAXXXXXXXX
       #- TURNSTILE_SECRET_KEY=0x4AAAAAAXXXX
