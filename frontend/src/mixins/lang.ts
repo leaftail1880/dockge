@@ -1,6 +1,6 @@
+import { defineComponent } from "vue";
 import { currentLocale } from "../i18n";
 import { setPageLocale } from "../util-frontend";
-import { defineComponent } from "vue";
 const langModules = import.meta.glob("../lang/*.json");
 
 export default defineComponent({
@@ -25,12 +25,17 @@ export default defineComponent({
   methods: {
     /**
      * Change the application language
-     * @param {string} lang Language code to switch to
-     * @returns {Promise<void>}
+     * @param lang Language code to switch to
      */
-    async changeLang(lang: string) {
-      const message = (await langModules["../lang/" + lang + ".json"]())
-        .default;
+    async changeLang(lang: string): Promise<void> {
+      const message = (
+        (await langModules["../lang/" + lang + ".json"]()) as Record<
+          string,
+          unknown
+        >
+      ).default;
+
+      // @ts-expect-error Vue is stupid
       this.$i18n.setLocaleMessage(lang, message);
       this.$i18n.locale = lang;
       localStorage.locale = lang;

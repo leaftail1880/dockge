@@ -1,10 +1,14 @@
 // @ts-ignore
+import { passwordStrength } from "check-password-strength";
+// @ts-ignore
 import composerize from "composerize";
-import { SocketHandler } from "../socket-handler.js";
+import fs, { promises as fsAsync } from "fs";
+import jwt from "jsonwebtoken";
+import path from "path";
+import { R } from "redbean-node";
 import { DockgeServer } from "../dockge-server";
 import { log } from "../log";
-import { R } from "redbean-node";
-import { loginRateLimiter, twoFaRateLimiter } from "../rate-limiter";
+import { User } from "../models/user";
 import {
   generatePasswordHash,
   needRehashPassword,
@@ -12,7 +16,9 @@ import {
   SHAKE256_LENGTH,
   verifyPassword,
 } from "../password-hash";
-import { User } from "../models/user";
+import { loginRateLimiter } from "../rate-limiter";
+import { Settings } from "../settings";
+import { SocketHandler } from "../socket-handler.js";
 import {
   callbackError,
   checkLogin,
@@ -21,11 +27,6 @@ import {
   JWTDecoded,
   ValidationError,
 } from "../util-server";
-import { passwordStrength } from "check-password-strength";
-import jwt from "jsonwebtoken";
-import { Settings } from "../settings";
-import fs, { promises as fsAsync } from "fs";
-import path from "path";
 
 async function verifyTurnstileToken(
   token: string,
@@ -278,6 +279,7 @@ export class MainSocketHandler extends SocketHandler {
           const verify = notp.totp.verify(
             data.token,
             user.twofa_secret,
+            // @ts-ignore
             twoFAVerifyOptions,
           );
 

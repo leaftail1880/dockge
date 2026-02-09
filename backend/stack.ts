@@ -1,6 +1,7 @@
 import fs, { promises as fsAsync } from "fs";
 import path from "path";
 import childProcessAsync from "promisify-child-process";
+import { format } from "util";
 import yaml from "yaml";
 import {
   acceptedComposeFileNames,
@@ -25,6 +26,30 @@ import { DockgeSocket, fileExists, ValidationError } from "./util-server";
 
 export interface DeleteOptions {
   deleteStackFiles: boolean;
+}
+
+interface StackJson {
+  Name: string; // 'lushway',
+  Status: string; // 'exited(1), running(3)',
+  ConfigFiles: string; // 'D:\\dockge\\stacks\\ha\\compose.yaml'
+}
+
+interface ContainerJson {
+  Command: string; //`"/bin/sh -c 'node --…"`
+  CreatedAt: string; // "2026-02-08 18:20:20 +0300 MSK",
+  ID: string; // "51ebfac4a8ae",
+  Image: string; // "ghcr.io/lushway/telegram-discord",
+  Labels: string; // "com.docker.compose.container-number=1,com.docker.compose.project.working_dir=D:\\dockge\\stacks\\ha,com.docker.compose.project=lushway ... more
+  LocalVolumes: string; // "0"
+  Mounts: string; // ""
+  Names: string; // "lushway-telegram-discord",
+  Networks: string; // "lushway_default"
+  Platform: null;
+  Ports: string; // "8081/tcp",
+  RunningFor: string; // "18 hours ago",
+  Size: string; // "0B"
+  State: string; // "running",
+  Status: string; // "Up 18 hours",
 }
 
 export class Stack {
@@ -117,19 +142,23 @@ export class Stack {
   /**
    * Get the status of the stack from `docker compose ps --format json`
    */
-  async ps(): Promise<object> {
+  async ps(): Promise<ContainerJson[]> {
     let res = await childProcessAsync.spawn(
       "docker",
       this.getComposeOptions("ps", "--format", "json"),
       {
-        cwd: this.path,
         encoding: "utf-8",
+        cwd: this.path,
       },
     );
-    if (!res.stdout) {
-      return {};
+    if (!res.stdout || !(res.stdout as string).trim()) {
+      return [];
     }
-    return JSON.parse(res.stdout.toString());
+    return res.stdout
+      .toString()
+      .split("\n")
+      .filter((e) => !!e.trim())
+      .map((e) => JSON.parse(e.trim()));
   }
 
   get isManagedByDockge(): boolean {
@@ -437,7 +466,7 @@ export class Stack {
       return stackList;
     }
 
-    let composeList = JSON.parse(res.stdout.toString());
+    let composeList = JSON.parse(res.stdout.toString()) as StackJson[];
 
     for (let composeStack of composeList) {
       let stack = stackList.get(composeStack.Name);
@@ -492,7 +521,7 @@ export class Stack {
    */
   static async getSingleComposeStatus(
     composeName: string,
-  ): Promise<any[] | null> {
+  ): Promise<ContainerJson[] | null> {
     let res = await childProcessAsync.spawn(
       "docker",
       [
@@ -514,12 +543,14 @@ export class Stack {
     let dockerResponse = res.stdout.toString();
     let composeList;
     try {
-      composeList = JSON.parse(dockerResponse);
+      composeList = dockerResponse
+        .split("\n")
+        .filter((e) => !!e.trim())
+        .map((e) => JSON.parse(e.trim()));
     } catch (error) {
-      // Optional: Log the error for debugging purposes
-      console.error(
-        "Failed to parse JSON from res.stdout: ",
-        res.dockerResponse,
+      log.debug(
+        "GET SINGLE COMPOSE STATUS",
+        format(composeName, "Failed to parse JSON from res.stdout", error, res),
       );
       return null;
     }
@@ -532,7 +563,7 @@ export class Stack {
    * First, we need to get the number of containers that are in the exited state
    * Then read all the containers and check if they are exited with status 0 (OK) or something else (Not OK)
    */
-  static async isComposeExitClean(composeStack: any[]): Promise<number> {
+  static async isComposeExitClean(composeStack: StackJson): Promise<number> {
     const expectedContainersExited = parseInt(
       composeStack.Status.split("(")[1].split(")")[0],
     );
@@ -567,7 +598,7 @@ export class Stack {
    * Input Example: "exited(1), running(1)"
    * @param status
    */
-  static async statusConvert(composeStack: any[]): Promise<number> {
+  static async statusConvert(composeStack: StackJson): Promise<number> {
     if (composeStack.Status.startsWith("created")) {
       return CREATED_STACK;
     } else if (composeStack.Status.includes("exited")) {
@@ -862,7 +893,9 @@ export class Stack {
           } else {
             addLine(obj);
           }
-        } catch (e) {}
+        } catch (e) {
+          console.error("getServiceStatusList", e);
+        }
       }
 
       return statusList;
