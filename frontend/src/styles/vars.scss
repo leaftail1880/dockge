@@ -1,11 +1,11 @@
-$primary: #74c2ff;
+$primary: #74ff97;
 $danger: #dc3545;
 $warning: #f8a306;
 $maintenance: #1747f5;
 $link-color: #111;
-$border-radius: 50rem;
+$border-radius: 25rem;
 
-$highlight: #9dd1ff;
+$highlight: #9dffd0;
 $highlight-white: #e7faec;
 
 $dark-font-color: #b1b8c0;
@@ -22,10 +22,14 @@ $easing-in-out: cubic-bezier(0.79, 0.14, 0.15, 0.86);
 
 $dropdown-border-radius: 0.5rem;
 
-$primary-gradient: linear-gradient(135deg, #74c2ff 0%, #74c2ff 75%, #86e6a9);
+$primary-gradient: linear-gradient(135deg, #b0ff74 0%, #74ffbc 75%, #86e6a9);
 $primary-gradient-active: linear-gradient(
   135deg,
-  #74c2ff 0%,
-  #74c2ff 50%,
+  #ecff74 0%,
+  #7bff74 50%,
   #86e6a9
 );
+
+// Decrease font size and paddings
+$font-size-root: 0.875rem;
+$spacer: 0.5rem; // Changes base spacing to 8px instead of default 16px
