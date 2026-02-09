@@ -44,12 +44,18 @@ interface ContainerJson {
   Mounts: string; // ""
   Names: string; // "lushway-telegram-discord",
   Networks: string; // "lushway_default"
-  Platform: null;
+  Platform?: null;
   Ports: string; // "8081/tcp",
   RunningFor: string; // "18 hours ago",
   Size: string; // "0B"
   State: string; // "running",
   Status: string; // "Up 18 hours",
+  ExitCode?: number;
+  Health: string;
+  Name: string;
+  Project: string;
+  Publishers: object[];
+  Service: string;
 }
 
 export class Stack {
