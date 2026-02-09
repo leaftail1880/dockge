@@ -6,9 +6,9 @@
       </h1>
 
       <div class="mb-3">
-        <router-link :to="sh" class="btn btn-normal me-2">{{
-          $t("Switch to sh")
-        }}</router-link>
+        <router-link :to="sh" class="btn btn-normal me-2">
+          {{ $t("Switch to sh") }}
+        </router-link>
       </div>
 
       <Terminal
@@ -26,7 +26,10 @@
 </template>
 
 <script>
-import { getContainerExecTerminalName } from "../../../common/util-common";
+import {
+  getContainerAttachTerminalName,
+  getContainerExecTerminalName,
+} from "../../../common/util-common";
 
 export default {
   components: {},
@@ -50,12 +53,21 @@ export default {
       return this.$route.query.mode === "attach" ? "attach" : "interactive";
     },
     terminalName() {
-      return getContainerExecTerminalName(
-        this.endpoint,
-        this.stackName,
-        this.serviceName,
-        0,
-      );
+      if (this.terminalMode === "attach") {
+        return getContainerAttachTerminalName(
+          this.endpoint,
+          this.stackName,
+          this.serviceName,
+          0,
+        );
+      } else {
+        return getContainerExecTerminalName(
+          this.endpoint,
+          this.stackName,
+          this.serviceName,
+          0,
+        );
+      }
     },
     sh() {
       let endpoint = this.$route.params.endpoint;

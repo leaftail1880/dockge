@@ -41,6 +41,7 @@ async function initRandomBytes() {
       return bytes;
     };
   } else {
+    // @ts-expect-error
     randomBytes = (await import("node:crypto")).randomBytes;
   }
 }
@@ -237,6 +238,24 @@ export function getContainerExecTerminalName(
   );
 }
 
+export function getContainerAttachTerminalName(
+  endpoint: string,
+  stackName: string,
+  container: string,
+  index: number,
+) {
+  return (
+    "container-attach-" +
+    endpoint +
+    "-" +
+    stackName +
+    "-" +
+    container +
+    "-" +
+    index
+  );
+}
+
 export function copyYAMLComments(doc: Document, src: Document) {
   doc.comment = src.comment;
   doc.commentBefore = src.commentBefore;
@@ -263,8 +282,8 @@ function copyYAMLCommentsItems(items: any, srcItems: any) {
     const item: any = items[i];
 
     // Try to find matching source item by content
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const srcIndex = srcItems.findIndex(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (srcItem: any) =>
         JSON.stringify(srcItem.value) === JSON.stringify(item.value) &&
         JSON.stringify(srcItem.key) === JSON.stringify(item.key),

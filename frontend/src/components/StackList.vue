@@ -36,7 +36,7 @@
           </form>
         </div>
 
-        <div class="update-all-wrapper">
+        <!-- <div class="update-all-wrapper">
           <button
             class="btn btn-primary"
             :disabled="processing || flatStackList.length === 0"
@@ -45,7 +45,7 @@
             <font-awesome-icon icon="fa-cloud-arrow-down me-1" />
             {{ $t("updateAll") }}
           </button>
-        </div>
+        </div> -->
       </div>
 
       <!-- TODO -->

@@ -27,7 +27,7 @@ export default {
     },
 
     statusName() {
-      return this.$t(statusNameShort(this.stack?.status));
+      return this.$t(statusNameShort(this.stack?.status)).toUpperCase();
     },
 
     className() {

@@ -16,22 +16,26 @@ export default {
   terminal: null,
   components: {},
   props: {
+    // eslint-disable-next-line vue/require-default-prop
     name: {
       type: String,
       require: true,
     },
 
+    // eslint-disable-next-line vue/require-default-prop
     endpoint: {
       type: String,
       require: true,
     },
 
     // Require if mode is interactive
+    // eslint-disable-next-line vue/require-default-prop
     stackName: {
       type: String,
     },
 
     // Require if mode is interactive
+    // eslint-disable-next-line vue/require-default-prop
     serviceName: {
       type: String,
     },
@@ -136,7 +140,7 @@ export default {
         },
       );
     } else if (this.mode === "attach") {
-      // NEW: Attach main process
+      console.debug("Create attach terminal:", this.name);
       this.$root.emitAgent(
         this.endpoint,
         "attachTerminal",
@@ -403,7 +407,7 @@ export default {
         this.cursorPosition += text.length;
         const backspaces = "\b".repeat(afterCursor.length);
         this.terminal.write(backspaces);
-      } else if (this.mode === "interactive") {
+      } else if (this.mode === "interactive" || this.mode === "attach") {
         // For interactive terminal, send directly to server
         this.$root.emitAgent(
           this.endpoint,
@@ -427,7 +431,11 @@ export default {
       event.preventDefault();
 
       // Only handle paste for modes that support input
-      if (this.mode === "mainTerminal" || this.mode === "interactive") {
+      if (
+        this.mode === "mainTerminal" ||
+        this.mode === "interactive" ||
+        this.mode === "attach"
+      ) {
         this.handlePaste();
       }
     },

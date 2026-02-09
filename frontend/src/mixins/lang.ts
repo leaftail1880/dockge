@@ -1,6 +1,8 @@
 import { defineComponent } from "vue";
 import { currentLocale } from "../i18n";
 import { setPageLocale } from "../util-frontend";
+
+// @ts-ignore
 const langModules = import.meta.glob("../lang/*.json");
 
 export default defineComponent({

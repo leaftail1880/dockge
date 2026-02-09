@@ -58,5 +58,6 @@ module.exports = {
     "prefer-const": "off",
     "vue/html-indent": "off",
     "vue/html-closing-bracket-newline": "off",
+    "vue/no-template-shadow": "off",
   },
 };

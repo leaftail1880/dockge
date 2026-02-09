@@ -2,7 +2,7 @@
   <div class="shadow-box big-padding mb-3 container">
     <div class="row">
       <div class="col-5">
-        <h4>{{ name }}</h4>
+        <h5>{{ name }}</h5>
         <div class="image mb-2">
           <span class="me-1">{{ imageName }}:</span
           ><span class="tag">{{ imageTag }}</span>
@@ -24,23 +24,23 @@
       </div>
       <div class="col-7">
         <div class="function">
-          <div class="btn-group me-2" role="group">
+          <div class="btn-group me-1" role="group">
             <router-link
               v-if="
                 !isEditMode && (status === 'running' || status === 'healthy')
               "
-              class="btn btn-warning"
+              class="btn btn-normal px-4"
               :to="attachRouteLink"
               :title="$t('Attach to main process STDIN/TTY (docker attach)')"
             >
-              <font-awesome-icon icon="plug" />
+              <font-awesome-icon icon="terminal" />
               Attach
             </router-link>
             <router-link
               v-if="
                 !isEditMode && (status === 'running' || status === 'healthy')
               "
-              class="btn btn-normal"
+              class="btn btn-normal px-4"
               :to="terminalRouteLink"
               disabled=""
             >
@@ -69,7 +69,7 @@
                   status === 'healthy' ||
                   status === 'unhealthy')
               "
-              class="btn btn-normal"
+              class="btn btn-normal px-4"
               :disabled="processing"
               @click="stopService"
             >
@@ -84,7 +84,7 @@
                   status === 'healthy' ||
                   status === 'unhealthy')
               "
-              class="btn btn-normal"
+              class="btn btn-normal px-4"
               :disabled="processing"
               @click="restartService"
             >
