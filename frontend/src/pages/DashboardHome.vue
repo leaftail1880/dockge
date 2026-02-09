@@ -228,7 +228,7 @@
   <router-view ref="child" />
 </template>
 
-<script>
+<script lang="ts">
 import { statusNameShort } from "../../../common/util-common";
 
 export default {

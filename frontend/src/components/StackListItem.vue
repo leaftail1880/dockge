@@ -14,7 +14,7 @@
   </router-link>
 </template>
 
-<script>
+<script lang="ts">
 import Uptime from "./Uptime.vue";
 
 export default {

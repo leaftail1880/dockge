@@ -18,7 +18,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import StackList from "../components/StackList.vue";
 
 export default {

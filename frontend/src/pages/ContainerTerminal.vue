@@ -25,7 +25,7 @@
   </transition>
 </template>
 
-<script>
+<script lang="ts">
 import {
   getContainerAttachTerminalName,
   getContainerExecTerminalName,

@@ -510,7 +510,7 @@
   </transition>
 </template>
 
-<script>
+<script lang="ts">
 import { python } from "@codemirror/lang-python";
 import { yaml } from "@codemirror/lang-yaml";
 import { EditorView, lineNumbers } from "@codemirror/view";
@@ -544,10 +544,10 @@ services:
 `;
 const envDefault = "# VARIABLE=value #comment";
 
-let yamlErrorTimeout = null;
+let yamlErrorTimeout: number;
 
-let serviceStatusTimeout = null;
-let dockerStatsTimeout = null;
+let serviceStatusTimeout: number;
+let dockerStatsTimeout: number;
 
 export default {
   components: {
@@ -602,7 +602,11 @@ export default {
       combinedTerminalRows: COMBINED_TERMINAL_ROWS,
       combinedTerminalCols: COMBINED_TERMINAL_COLS,
       stack: {
-        composeOverrideYAML: "",
+        name: "",
+        composeYAML: "",
+        composeENV: "",
+        isManagedByDockge: true,
+        endpoint: "",
       },
       serviceStatusList: {},
       dockerStats: {},
@@ -802,14 +806,14 @@ export default {
       clearTimeout(serviceStatusTimeout);
       serviceStatusTimeout = setTimeout(async () => {
         this.requestServiceStatus();
-      }, 5000);
+      }, 5000) as unknown as number;
     },
 
     startDockerStatsTimeout() {
       clearTimeout(dockerStatsTimeout);
       dockerStatsTimeout = setTimeout(async () => {
         this.requestDockerStats();
-      }, 5000);
+      }, 5000) as unknown as number;
     },
 
     requestServiceStatus() {

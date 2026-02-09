@@ -128,7 +128,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { compareVersions } from "compare-versions";
 import { ALL_ENDPOINTS } from "../../../common/util-common";
 import Login from "../components/Login.vue";

@@ -1,12 +1,11 @@
-import { Socket } from "socket.io";
-import { Terminal } from "./terminal";
-import { randomBytes } from "crypto";
-import { log } from "./log";
-import { ERROR_TYPE_VALIDATION } from "../common/util-common";
-import { R } from "redbean-node";
-import { verifyPassword } from "./password-hash";
 import fs from "fs";
+import { R } from "redbean-node";
+import { Socket } from "socket.io";
+import { ERROR_TYPE_VALIDATION } from "../common/util-common";
 import { AgentManager } from "./agent-manager";
+import { log } from "./log";
+import { verifyPassword } from "./password-hash";
+import { Terminal } from "./terminal";
 
 export interface JWTDecoded {
   username: string;

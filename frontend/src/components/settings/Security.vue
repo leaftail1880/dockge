@@ -143,7 +143,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import Confirm from "../../components/Confirm.vue";
 import TwoFADialog from "../../components/TwoFADialog.vue";
 

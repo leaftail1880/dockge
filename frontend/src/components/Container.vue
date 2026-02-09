@@ -266,7 +266,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { defineComponent } from "vue";
 import { parseDockerPort } from "../../../common/util-common";

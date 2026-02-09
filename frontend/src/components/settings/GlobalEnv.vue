@@ -28,7 +28,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { python } from "@codemirror/lang-python"; // good enough for .env key=value highlighting
 import { EditorView, lineNumbers } from "@codemirror/view";
 import { dracula as editorTheme } from "thememirror";

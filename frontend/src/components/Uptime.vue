@@ -2,7 +2,7 @@
   <span :class="className">{{ statusName }}</span>
 </template>
 
-<script>
+<script lang="ts">
 import { statusColor, statusNameShort } from "../../../common/util-common";
 
 export default {

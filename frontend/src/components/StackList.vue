@@ -136,7 +136,7 @@
   </Confirm>
 </template>
 
-<script>
+<script lang="ts">
 import {
   CREATED_FILE,
   CREATED_STACK,
